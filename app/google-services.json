@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "40526662731",
+    "firebase_url": "https://gostore-b24ab.firebaseio.com",
+    "project_id": "gostore-b24ab",
+    "storage_bucket": "gostore-b24ab.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:40526662731:android:f33f5693cd6de8f9f2d1ce",
+        "android_client_info": {
+          "package_name": "com.supinfo.tp.gostore"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "40526662731-mm52o7p4nu52ue4d9okmlf733ivhgnms.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCIwaec9v3CbH7LRjGnahf0jpgqgO1ngW4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "40526662731-mm52o7p4nu52ue4d9okmlf733ivhgnms.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
