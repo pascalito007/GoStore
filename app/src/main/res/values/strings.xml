@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Go Store</string>
     <string name="action_settings">Settings</string>
+    <!-- Facebook application ID and custom URL scheme (app ID prefixed by 'fb'). -->
+    <string name="facebook_application_id" translatable="false">220872139149362</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb220872139149362</string>
+    <string name="waiting">Patientez...!</string>
+    <string name="scan_qrcode_hint">Veuillez scanner ce code sur la borne</string>
 </resources>
