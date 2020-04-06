@@ -6,4 +6,19 @@
     <string name="facebook_login_protocol_scheme" translatable="false">fb220872139149362</string>
     <string name="waiting">Patientez...!</string>
     <string name="scan_qrcode_hint">Veuillez scanner ce code sur la borne</string>
+    <string name="utilisez_formulaire">Utilisez le formulaire</string>
+
+
+    <string name="card_header">NFN CARD</string>
+    <string name="card_number_sample">XXXX XXXX XXXX XXXX</string>
+    <string name="card_validity_label">VALID UPTO</string>
+    <string name="card_validity_sample">MM/YY</string>
+    <string name="card_name_sample">CARD HOLDER</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="card_holders_name">Card Holder\'s Name</string>
+    <string name="card_number">Card Number</string>
+    <string name="card_validity">Expires</string>
+    <string name="card_cvv">CVV/CVC Number</string>
 </resources>
