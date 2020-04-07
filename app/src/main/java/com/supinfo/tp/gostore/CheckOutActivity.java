@@ -1,20 +1,25 @@
 package com.supinfo.tp.gostore;
 
+import android.app.Activity;
 import android.app.FragmentManager;
+import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.DisplayMetrics;
 import android.util.Log;
-import android.view.View;
+import android.util.TypedValue;
+import android.view.KeyEvent;
+import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
-import com.supinfo.tp.gostore.CCFragment.CCNameFragment;
 import com.supinfo.tp.gostore.CCFragment.CCNumberFragment;
 import com.supinfo.tp.gostore.CCFragment.CCSecureCodeFragment;
-import com.supinfo.tp.gostore.CCFragment.CCValidityFragment;
 import com.supinfo.tp.gostore.Utils.CreditCardUtils;
 import com.supinfo.tp.gostore.Utils.ViewPagerAdapter;
 
@@ -25,6 +30,8 @@ public class CheckOutActivity extends AppCompatActivity implements FragmentManag
 
     @BindView(R.id.btnNext)
     Button btnNext;
+    @BindView(R.id.root)
+    RelativeLayout root;
 
     public CardFrontFragment cardFrontFragment;
     public CardBackFragment cardBackFragment;
@@ -33,8 +40,6 @@ public class CheckOutActivity extends AppCompatActivity implements FragmentManag
     private ViewPager viewPager;
 
     CCNumberFragment numberFragment;
-    CCNameFragment nameFragment;
-    CCValidityFragment validityFragment;
     CCSecureCodeFragment secureCodeFragment;
 
     int total_item;
@@ -69,7 +74,7 @@ public class CheckOutActivity extends AppCompatActivity implements FragmentManag
 
         //Initializing viewPager
         viewPager = (ViewPager) findViewById(R.id.viewpager);
-        viewPager.setOffscreenPageLimit(4);
+        viewPager.setOffscreenPageLimit(2);
         setupViewPager(viewPager);
 
 
@@ -104,35 +109,37 @@ public class CheckOutActivity extends AppCompatActivity implements FragmentManag
             }
         });
 
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                int pos = viewPager.getCurrentItem();
-                if (pos < total_item) {
-                    viewPager.setCurrentItem(pos + 1);
-                } else {
-                    checkEntries();
-                }
-
+        btnNext.setOnClickListener(view -> {
+            int pos = viewPager.getCurrentItem();
+            if (pos < total_item) {
+                viewPager.setCurrentItem(pos + 1);
+            } else {
+                checkEntries();
             }
+
         });
 
 
     }
 
+    private static float dpToPx(Context context, float valueInDp) {
+        DisplayMetrics metrics = context.getResources().getDisplayMetrics();
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, valueInDp, metrics);
+    }
+
     public void checkEntries() {
-        cardName = nameFragment.getName();
+        cardName = numberFragment.getName();
         cardNumber = numberFragment.getCardNumber();
-        cardValidity = validityFragment.getValidity();
+        cardValidity = numberFragment.getValidity();
         cardCVV = secureCodeFragment.getValue();
 
         if (TextUtils.isEmpty(cardName)) {
             Toast.makeText(CheckOutActivity.this, "Enter Valid Name", Toast.LENGTH_SHORT).show();
-        } else if (TextUtils.isEmpty(cardNumber) || !CreditCardUtils.isValid(cardNumber.replace(" ",""))) {
+        } else if (TextUtils.isEmpty(cardNumber) || !CreditCardUtils.isValid(cardNumber.replace(" ", ""))) {
             Toast.makeText(CheckOutActivity.this, "Enter Valid card number", Toast.LENGTH_SHORT).show();
-        } else if (TextUtils.isEmpty(cardValidity)||!CreditCardUtils.isValidDate(cardValidity)) {
+        } else if (TextUtils.isEmpty(cardValidity) || !CreditCardUtils.isValidDate(cardValidity)) {
             Toast.makeText(CheckOutActivity.this, "Enter correct validity", Toast.LENGTH_SHORT).show();
-        } else if (TextUtils.isEmpty(cardCVV)||cardCVV.length()<3) {
+        } else if (TextUtils.isEmpty(cardCVV) || cardCVV.length() < 3) {
             Toast.makeText(CheckOutActivity.this, "Enter valid security number", Toast.LENGTH_SHORT).show();
         } else
             Toast.makeText(CheckOutActivity.this, "Your card is added", Toast.LENGTH_SHORT).show();
@@ -147,12 +154,8 @@ public class CheckOutActivity extends AppCompatActivity implements FragmentManag
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
         numberFragment = new CCNumberFragment();
-        nameFragment = new CCNameFragment();
-        validityFragment = new CCValidityFragment();
         secureCodeFragment = new CCSecureCodeFragment();
         adapter.addFragment(numberFragment);
-        adapter.addFragment(nameFragment);
-        adapter.addFragment(validityFragment);
         adapter.addFragment(secureCodeFragment);
 
         total_item = adapter.getCount() - 1;
@@ -187,8 +190,50 @@ public class CheckOutActivity extends AppCompatActivity implements FragmentManag
         int pos = viewPager.getCurrentItem();
         if (pos > 0) {
             viewPager.setCurrentItem(pos - 1);
-        } else
+        } else {
+            hidKeyBoardOrQuit();
+        }
+    }
+
+    private void hidKeyBoardOrQuit() {
+        int heightDiff = root.getRootView().getHeight() - root.getHeight();
+        if (heightDiff > dpToPx(CheckOutActivity.this, 200)) { // if more than 200 dp, it's probably a keyboard...
+            final InputMethodManager inputMethodManager = (InputMethodManager) this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+            if (inputMethodManager.isActive()) {
+                if (this.getCurrentFocus() != null) {
+                    inputMethodManager.hideSoftInputFromWindow(this.getCurrentFocus().getWindowToken(), 0);
+                }
+            }
+        } else {
             super.onBackPressed();
+        }
+    }
+
+
+    public static void hideSoftKeyboard(Activity activity) {
+        final InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(Activity.INPUT_METHOD_SERVICE);
+        if (inputMethodManager.isActive()) {
+            if (activity.getCurrentFocus() != null) {
+                inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
+            }
+        } else {
+            activity.onBackPressed();
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            switch (keyCode) {
+                case KeyEvent.KEYCODE_BACK:
+                    //useful for hiding the soft-keyboard is:
+                    getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
+                    return true;
+            }
+
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     public void nextClick() {

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Go Store</string>
+    <string name="app_name">Supermarket 4.0</string>
     <string name="action_settings">Settings</string>
     <!-- Facebook application ID and custom URL scheme (app ID prefixed by 'fb'). -->
     <string name="facebook_application_id" translatable="false">220872139149362</string>
@@ -17,8 +17,12 @@
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="card_holders_name">Card Holder\'s Name</string>
-    <string name="card_number">Card Number</string>
-    <string name="card_validity">Expires</string>
-    <string name="card_cvv">CVV/CVC Number</string>
+    <string name="card_holders_name">Nom du propriétaire</string>
+    <string name="card_number">Numéro de carte</string>
+    <string name="card_validity">Expiration</string>
+    <string name="card_cvv">Code CVV/CVC</string>
+    <string name="next_label"><![CDATA[SUIVANT >>]]></string>
+    <string name="cart_number_hint">Numéro de carte</string>
+    <string name="name_on_card_hint">Nom sur la carte</string>
+    <string name="expire_date">Date d\'expiration</string>
 </resources>

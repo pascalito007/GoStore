@@ -5,7 +5,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".CheckOutActivity">
+    tools:context=".CheckOutActivity"
+    android:id="@+id/root">
 
 
     <FrameLayout
@@ -22,7 +23,7 @@
 
     <Button
         style="@style/ButtonStyle"
-        android:text="SUIVANT >>"
+        android:text="@string/next_label"
         android:id="@+id/btnNext"
         android:layout_alignParentBottom="true"/>
 
