@@ -3,7 +3,10 @@ package com.supinfo.tp.gostore;
 import android.app.Activity;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -18,6 +21,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.gson.Gson;
 import com.supinfo.tp.gostore.CCFragment.CCNumberFragment;
 import com.supinfo.tp.gostore.CCFragment.CCSecureCodeFragment;
 import com.supinfo.tp.gostore.Utils.CreditCardUtils;
@@ -25,6 +29,8 @@ import com.supinfo.tp.gostore.Utils.ViewPagerAdapter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static com.supinfo.tp.gostore.Constants.CARD_INFO_KEY;
 
 public class CheckOutActivity extends AppCompatActivity implements FragmentManager.OnBackStackChangedListener {
 
@@ -48,6 +54,8 @@ public class CheckOutActivity extends AppCompatActivity implements FragmentManag
     private boolean mShowingBack = false;
 
     String cardNumber, cardCVV, cardValidity, cardName;
+    private SharedPreferences preferences;
+    private static final int CHECKOUT_ACTIVITY_CODE=111;
 
 
     @Override
@@ -56,6 +64,8 @@ public class CheckOutActivity extends AppCompatActivity implements FragmentManag
         setContentView(R.layout.activity_check_out);
 
         ButterKnife.bind(this);
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+
 
 
         cardFrontFragment = new CardFrontFragment();
@@ -87,9 +97,9 @@ public class CheckOutActivity extends AppCompatActivity implements FragmentManag
             @Override
             public void onPageSelected(int position) {
                 if (position == total_item)
-                    btnNext.setText("SUBMIT");
+                    btnNext.setText("VALIDER");
                 else
-                    btnNext.setText("NEXT");
+                    btnNext.setText("SUIVANT");
 
                 Log.d("track", "onPageSelected: " + position);
 
@@ -144,6 +154,18 @@ public class CheckOutActivity extends AppCompatActivity implements FragmentManag
         } else
             Toast.makeText(CheckOutActivity.this, "Your card is added", Toast.LENGTH_SHORT).show();
 
+        SharedPreferences.Editor editor = preferences.edit();
+        Gson gson=new Gson();
+        CardInfo cardInfo=new CardInfo();
+        cardInfo.setCardHolder(cardName);
+        cardInfo.setCardNumber(cardNumber);
+        cardInfo.setExpireDate(cardValidity);
+        cardInfo.setSecretCode(cardCVV);
+        String cardInfoJson=gson.toJson(cardInfo);
+        editor.putString(CARD_INFO_KEY, cardInfoJson);
+        editor.apply();
+        Intent intent=new Intent(this, QrcodeHomeActivity.class);
+        startActivityForResult(intent, CHECKOUT_ACTIVITY_CODE);
     }
 
     @Override
