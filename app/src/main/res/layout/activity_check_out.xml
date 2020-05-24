@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".CheckOutActivity"
-    android:id="@+id/root">
+    tools:context=".activities.CheckOutActivity">
 
 
     <FrameLayout
@@ -16,17 +16,48 @@
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewpager"
-        android:layout_below="@+id/fragment_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/fragment_container"
+        android:visibility="gone"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <Button
-        style="@style/ButtonStyle"
-        android:text="@string/next_label"
-        android:id="@+id/btnNext"
-        android:layout_alignParentBottom="true"/>
+    <com.wajahatkarim3.easyflipview.EasyFlipView
+        android:id="@+id/flip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:autoFlipBack="false"
+        app:flipDuration="400"
+        app:flipEnabled="true"
+        app:flipFrom="right"
+        app:flipOnTouch="true"
+        app:flipType="horizontal">
 
+        <include layout="@layout/fragment_card_back" />
+
+
+        <include layout="@layout/fragment_card_front" />
+    </com.wajahatkarim3.easyflipview.EasyFlipView>
+
+    <include
+        android:id="@+id/cc"
+        layout="@layout/card_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/flip" />
+
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/btnNext"
+        style="?attr/materialButtonOutlinedStyle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="70dp"
+        android:layout_marginTop="18dp"
+        android:layout_marginRight="70dp"
+        android:onClick="validate"
+        android:text="VALIDER >>"
+        android:textSize="20sp"
+        android:layout_below="@+id/cc" />
 
 
 </RelativeLayout>

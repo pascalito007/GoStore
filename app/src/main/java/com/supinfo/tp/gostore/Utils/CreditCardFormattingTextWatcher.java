@@ -2,6 +2,7 @@ package com.supinfo.tp.gostore.Utils;
 
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -34,6 +35,7 @@ public class CreditCardFormattingTextWatcher implements TextWatcher {
         this.tvCard=tvcard;
         this.ivType=ivType;
         this.creditCardType=creditCardType;
+        Log.d("tvcard", tvcard+"");
     }
 
 
