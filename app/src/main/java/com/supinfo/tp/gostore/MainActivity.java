@@ -63,9 +63,9 @@ public class MainActivity extends AppCompatActivity {
         ref = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
-//        SharedPreferences.Editor editor=preferences.edit();
-//        editor.putString(USER_INFO_KEY, null);
-//        editor.apply();
+        SharedPreferences.Editor editor=preferences.edit();
+        editor.putString(USER_INFO_KEY, null);
+        editor.apply();
         Gson gson = new Gson();
         userInfo = gson.fromJson(preferences.getString(USER_INFO_KEY, null), UserInfo.class);
         Log.d("userinfo:", userInfo + "");
