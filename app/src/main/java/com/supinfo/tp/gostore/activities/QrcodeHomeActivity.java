@@ -15,18 +15,35 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.gson.Gson;
 import com.google.zxing.BarcodeFormat;
 import com.journeyapps.barcodescanner.BarcodeEncoder;
-import com.supinfo.tp.gostore.Utils.Constants;
 import com.supinfo.tp.gostore.MainActivity;
 import com.supinfo.tp.gostore.R;
+import com.supinfo.tp.gostore.Utils.Constants;
+import com.supinfo.tp.gostore.data.model.Entry;
 import com.supinfo.tp.gostore.data.model.UserInfo;
+
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class QrcodeHomeActivity extends AppCompatActivity {
+    private static final int QRCODE_ACTIVITY = 555;
     SharedPreferences preferences;
     UserInfo userInfo;
     @BindView(R.id.qrcode)
@@ -34,6 +51,8 @@ public class QrcodeHomeActivity extends AppCompatActivity {
     @BindView(R.id.welcome)
     TextView tvWelcome;
     FirebaseAuth auth;
+    DatabaseReference ref;
+    private String lastDate;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +60,7 @@ public class QrcodeHomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_qrcode_home);
         ButterKnife.bind(this);
         auth = FirebaseAuth.getInstance();
+        ref = FirebaseDatabase.getInstance().getReference();
 
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
         Gson gson = new Gson();
@@ -55,6 +75,38 @@ public class QrcodeHomeActivity extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+
+        List<Entry> entries = new ArrayList<>();
+        ref.child("users").child(this.userInfo.getEmail()).child("entries").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    lastDate = null;
+                    dataSnapshot.getChildren().forEach((DataSnapshot entry) -> {
+                        String status = entry.child("status").getValue(String.class);
+                         if (status.equals("shopping")) {
+                            System.out.println("shopping");
+                            Intent intent=new Intent(QrcodeHomeActivity.this, ShoppingListActivity.class);
+                            startActivityForResult(intent, QRCODE_ACTIVITY);
+
+                        }
+                    });
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+        /*String key = ref.child(this.userInfo.getEmail()).child("entries").push().getKey();
+        Entry entr = new Entry();
+        entr.setStatus("not-shopping");
+        entr.setEnter_time(LocalDateTime.now().format(format));
+        entr.setOut_time(LocalDateTime.now().plusHours(1).format(format));
+        ref.child("users").child(this.userInfo.getEmail()).child("entries").child(key).setValue(entr);*/
     }
 
     @Override

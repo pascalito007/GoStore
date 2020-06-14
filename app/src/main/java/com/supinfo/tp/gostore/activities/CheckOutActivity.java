@@ -281,7 +281,7 @@ public class CheckOutActivity extends AppCompatActivity {
         String cardInfoJson = gson.toJson(userInfo);
         editor.putString(USER_INFO_KEY, cardInfoJson);
         editor.apply();
-        ref.child("subscriptions").child(this.userInfo.getEmail().replace(".", ",")).setValue(this.userInfo);
+        ref.child("users").child(this.userInfo.getEmail().replace(".", ",")).setValue(this.userInfo);
         Intent intent = new Intent(this, QrcodeHomeActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

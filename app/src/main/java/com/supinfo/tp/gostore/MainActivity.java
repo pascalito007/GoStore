@@ -63,9 +63,13 @@ public class MainActivity extends AppCompatActivity {
         ref = FirebaseDatabase.getInstance().getReference();
         mAuth = FirebaseAuth.getInstance();
         preferences = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor=preferences.edit();
-        editor.putString(USER_INFO_KEY, null);
-        editor.apply();
+
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
         Gson gson = new Gson();
         userInfo = gson.fromJson(preferences.getString(USER_INFO_KEY, null), UserInfo.class);
         Log.d("userinfo:", userInfo + "");
@@ -97,7 +101,9 @@ public class MainActivity extends AppCompatActivity {
                             FirebaseUser user = mAuth.getCurrentUser();
                             if (user != null) {
                                 this.userInfo.setPassword(null);
-                                ref.child("subscriptions").child(user.getEmail().replace(".", ",")).setValue(this.userInfo);
+                                String email = user.getEmail().replace(".", ",");
+                                this.userInfo.setEmail(email);
+                                ref.child("users").child(email).setValue(this.userInfo);
                                 pDialog.dismiss();
                                 SweetAlertDialog dial = new SweetAlertDialog(this, SweetAlertDialog.SUCCESS_TYPE)
                                         .setTitleText("Inscription réussie")

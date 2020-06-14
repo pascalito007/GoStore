@@ -17,6 +17,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
+        <uses-library android:name="org.apache.http.legacy" android:required="false" />
         <activity android:name=".activities.ShoppingListActivity"
             android:theme="@style/AppTheme.NoActionBar">
 <!--            <intent-filter>-->
